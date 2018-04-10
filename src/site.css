@@ -1,0 +1,39 @@
+.sticky-note{
+    height: 300px;
+    position: absolute;
+}
+
+.card-progress{
+    float: right;
+}
+
+.card-header{
+    padding: 20px 10px 10px 10px;
+}
+
+.card-header input{
+    padding: 0 10px;
+    font-size: 1.4em;
+}
+
+.sticky-note .card-body textarea{
+    height: 141px;
+}
+
+.sticky-note input{
+    border-color: transparent;
+    background: transparent;
+}
+
+.sticky-note input:hover{
+    border-color: #ced4da;
+}
+
+.sticky-note textarea{
+    border-color: transparent;
+    resize: none;
+}
+
+.sticky-note textarea:hover{
+    border-color: #ced4da;
+}
