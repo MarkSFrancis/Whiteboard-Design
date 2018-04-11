@@ -6,12 +6,9 @@ function coordinate(x, y) {
     };
 }
 
-function whiteboard(canvas, width, height) {
-    console.log('width: ' + width + 'height: ' + height);
-    canvas.width = width;
-    canvas.height = height;
-
-    var ctx = canvas.getContext('2d'),
+function whiteboard($document, $canvas, width, height) {
+    var canvas = $canvas[0],
+        ctx = canvas.getContext('2d'),
         erasing = false,
         eraserThickness = 14,
         eraserColor = 'white',
@@ -19,17 +16,18 @@ function whiteboard(canvas, width, height) {
         drawingThickness = 2,
         drawing = false,
         prevCoord;
+    
+    canvas.width = width;
+    canvas.height = height;
 
     function getMouseCoords(clientX, clientY) {
         return coordinate(
-            clientX - canvas.offsetLeft, 
+            clientX - canvas.offsetLeft,
             clientY - canvas.offsetTop
         );
     }
 
     function draw(curCoord) {
-        console.log('drawing at ' + prevCoord.x + ',' + prevCoord.y + ' and ' + curCoord.x + ',' + curCoord.y);
-        
         ctx.beginPath();
         ctx.moveTo(prevCoord.x, prevCoord.y);
         ctx.lineTo(curCoord.x, curCoord.y);
@@ -44,7 +42,7 @@ function whiteboard(canvas, width, height) {
 
         ctx.stroke();
         ctx.closePath();
-        
+
         prevCoord = curCoord;
     }
 
@@ -86,19 +84,29 @@ function whiteboard(canvas, width, height) {
         ctx.drawImage(data, 0, 0);
     }
 
-    canvas.addEventListener("mousemove", function (e) {
+    $canvas.mousemove(function (e) {
         if (drawing || erasing) {
             draw(getMouseCoords(e.clientX, e.clientY));
         }
-    }, false);
+    });
 
-    canvas.addEventListener("mousedown", function (e) {
+    $canvas.mousedown(function (e) {
         startDrawing(getMouseCoords(e.clientX, e.clientY));
-    }, false);
 
-    canvas.addEventListener("mouseup", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+
+    $document.mouseup(function (e) {
         stopDrawing();
-    }, false);
+    });
+    
+    $canvas.on('contextmenu', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
 
     return {
         exportToImage: exportToImage,
