@@ -37,3 +37,9 @@
 .sticky-note textarea:hover{
     border-color: #ced4da;
 }
+
+canvas{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
