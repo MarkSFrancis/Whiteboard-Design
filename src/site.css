@@ -1,4 +1,5 @@
 .sticky-note{
+    background: rgba(255,255,255,0.97);
     height: 300px;
     position: absolute;
 }
@@ -31,6 +32,7 @@
 }
 
 .sticky-note textarea{
+    background: transparent;
     border-color: transparent;
     resize: none;
 }
