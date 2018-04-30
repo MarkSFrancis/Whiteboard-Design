@@ -3,6 +3,7 @@ $(function () {
     <div class="sticky-note card ui-widget-content" style="width: 18rem;">
         <div class="card-header">
             <input type="text" class="form-control" value="Card title">
+            <a class="btn btn-outline-primary js-delete-note" href="#"><i class="far fa-trash-alt"></i></a>
         </div>
         <div class="card-body">
             <textarea class="form-control card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</textarea>
@@ -13,8 +14,14 @@ $(function () {
         </div>
     </div>`;
     
+    var resizeWhiteboard = resizeWhiteboardEvent($(document));
+    
     function initialiseSticky($stickyNote) {
-        $stickyNote.draggable();
+        $stickyNote.draggable({
+            stop: function(){
+                resizeWhiteboard.invoke();
+            }
+        });
         $stickyNote.resizable({
             minHeight: 216,
             minWidth: 176
@@ -32,7 +39,17 @@ $(function () {
         
         return false;
     });
+    
+    $body.on('click', '.js-delete-note', function() {
+        var $sticky = $(this).parents('.sticky-note');
+        $sticky.remove();
+        return false;
+    });
 
     var $canvas = $('#js-whiteboard');
-    whiteboard($(document), $canvas, $canvas.width(), $canvas.height());
+    
+    $canvas.width($body.width());
+    $canvas.height($body.height());
+    
+    whiteboard($(document), resizeWhiteboard, $canvas, $canvas.width(), $canvas.height());
 })

@@ -6,7 +6,7 @@ function coordinate(x, y) {
     };
 }
 
-function whiteboard($document, $canvas, width, height) {
+function whiteboard($document, resizeWhiteboardEvent, $canvas, width, height) {
     var canvas = $canvas[0],
         ctx = canvas.getContext('2d'),
         erasing = false,
@@ -20,10 +20,11 @@ function whiteboard($document, $canvas, width, height) {
     canvas.width = width;
     canvas.height = height;
 
-    function getMouseCoords(clientX, clientY) {
+    function getMouseCoords(x, y) {
+        var offset = $canvas.offset();
         return coordinate(
-            clientX - canvas.offsetLeft,
-            clientY - canvas.offsetTop
+            x - offset.left,
+            y - offset.top
         );
     }
 
@@ -95,17 +96,17 @@ function whiteboard($document, $canvas, width, height) {
 
     $canvas.mousemove(function (e) {
         if (drawing || erasing) {
-            draw(getMouseCoords(e.clientX, e.clientY));
+            draw(getMouseCoords(e.pageX, e.pageY));
         }
     });
 
     $canvas.mousedown(function (e) {
         switch (e.which) {
             case 1:
-                startDrawing(getMouseCoords(e.clientX, e.clientY));
+                startDrawing(getMouseCoords(e.pageX, e.pageY));
                 break;
             case 3:
-                startErasing(getMouseCoords(e.clientX, e.clientY));
+                startErasing(getMouseCoords(e.pageX, e.pageY));
                 break;
             default:
                 return;
@@ -118,12 +119,25 @@ function whiteboard($document, $canvas, width, height) {
 
     $document.mouseup(function (e) {
         stopDrawing();
+        stopErasing();
     });
 
     $canvas.on('contextmenu', function (e) {
         e.preventDefault();
         e.stopPropagation();
         return false;
+    });
+    
+    resizeWhiteboardEvent.addListener(function(newSize){
+        console.log(newSize);
+        
+        $canvas.width(newSize.width);
+        $canvas.height(newSize.height);
+        
+        var oldDrawing = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        canvas.width = newSize.width;
+        canvas.height = newSize.height;
+        ctx.putImageData(oldDrawing, 0, 0);
     });
 
     return {
